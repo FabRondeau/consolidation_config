@@ -1,0 +1,66 @@
+diff --git a/src/Util/ArrayUtil.php b/src/Util/ArrayUtil.php
+index 2784e1d..531a115 100644
+--- a/src/Util/ArrayUtil.php
++++ b/src/Util/ArrayUtil.php
+@@ -92,7 +92,7 @@ class ArrayUtil
+             if (self::selectMerge($keyPrefix, $key, $selectionList)) {
+                 return array_merge_recursive($merged[$key], $value);
+             } else {
+-                return self::mergeRecursiveSelect($merged[$key], $value, $selectionList, "${keyPrefix}${key}.");
++                return self::mergeRecursiveSelect($merged[$key], $value, $selectionList, "{$keyPrefix}{$key}.");
+             }
+         }
+         return $value;
+@@ -107,7 +107,7 @@ class ArrayUtil
+      */
+     protected static function selectMerge($keyPrefix, $key, $selectionList)
+     {
+-        return in_array("${keyPrefix}${key}", $selectionList);
++        return in_array("{$keyPrefix}{$key}", $selectionList);
+     }
+ 
+ 
+diff --git a/src/Util/ConfigFallback.php b/src/Util/ConfigFallback.php
+index bb253e1..532bb4f 100644
+--- a/src/Util/ConfigFallback.php
++++ b/src/Util/ConfigFallback.php
+@@ -37,7 +37,7 @@ class ConfigFallback extends ConfigGroup
+      */
+     protected function getWithFallback($key, $group, $prefix = '', $postfix = '.')
+     {
+-        $configKey = "{$prefix}{$group}${postfix}{$key}";
++        $configKey = "{$prefix}{$group}{$postfix}{$key}";
+         if ($this->config->has($configKey)) {
+             return $this->config->get($configKey);
+         }
+diff --git a/src/Util/ConfigMerge.php b/src/Util/ConfigMerge.php
+index bbeecde..eb367c3 100644
+--- a/src/Util/ConfigMerge.php
++++ b/src/Util/ConfigMerge.php
+@@ -28,7 +28,7 @@ class ConfigMerge extends ConfigGroup
+      */
+     public function getWithMerge($key, $group, $prefix = '', $postfix = '.')
+     {
+-        $configKey = "{$prefix}{$group}${postfix}{$key}";
++        $configKey = "{$prefix}{$group}{$postfix}{$key}";
+         $result = $this->config->get($configKey, []);
+         if (!is_array($result)) {
+             throw new \UnexpectedValueException($configKey . ' must be a list of settings to apply.');
+diff --git a/tests/src/Unit/Loader/ConfigProcessorTest.php b/tests/src/Unit/Loader/ConfigProcessorTest.php
+index a788ba2..61ac8d5 100644
+--- a/tests/src/Unit/Loader/ConfigProcessorTest.php
++++ b/tests/src/Unit/Loader/ConfigProcessorTest.php
+@@ -16,11 +16,11 @@ class ConfigProcessorTest extends TestBase
+             'm' => [1],
+         ];
+         $config2 = [
+-            'b' => '${c}bar',
++            'b' => '{$c}bar',
+             'm' => [2],
+         ];
+         $config3 = [
+-            'a' => '${b}baz',
++            'a' => '{$b}baz',
+             'm' => [3],
+         ];
+ 

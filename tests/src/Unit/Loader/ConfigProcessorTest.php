@@ -16,11 +16,11 @@ class ConfigProcessorTest extends TestBase
             'm' => [1],
         ];
         $config2 = [
-            'b' => '${c}bar',
+            'b' => '{$c}bar',
             'm' => [2],
         ];
         $config3 = [
-            'a' => '${b}baz',
+            'a' => '{$b}baz',
             'm' => [3],
         ];
 
